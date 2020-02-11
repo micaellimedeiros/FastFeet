@@ -37,6 +37,16 @@ Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-e
 
 ---
 
+# Envio de emails:
+![Screenshot_2020-02-11 Mailtrap - Safe Email Testing](https://user-images.githubusercontent.com/54600663/74209995-c5f99780-4c68-11ea-9ce6-06052325d0d9.png)
+
+# Testando pelo insomnia:
+![insomnia](https://user-images.githubusercontent.com/54600663/74209998-c85bf180-4c68-11ea-9677-f540b7198c18.png)
+
+
+---
+
+
 By [MicaelliMedeiros](https://www.linkedin.com/in/micaellimedeiros/)
 
 ---
