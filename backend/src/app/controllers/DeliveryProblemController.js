@@ -72,7 +72,7 @@ class DeliveryProblemController {
     });
 
     if (!deliveryProblemExists) {
-      return res.status(400).json({ error: "It's problem does not exists" });
+      return res.status(400).json({ error: "This problem does not exists" });
     }
 
     const delivery = await Delivery.findByPk(
@@ -89,7 +89,7 @@ class DeliveryProblemController {
     );
 
     if (delivery.end_date !== null && delivery.signature_id !== null) {
-      return res.status(400).json('This delivery already completed');
+      return res.status(400).json('The delivery is already completed');
     }
 
     delivery.update(
