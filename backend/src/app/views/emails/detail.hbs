@@ -1,0 +1,19 @@
+<strong>Olá, {{ deliveryman }}</strong>
+<p>Há uma nova encomenda disponível para entrega:</p>
+
+<strong>Produto: </strong>{{ product }}.<br /><br />
+
+<strong>Detalhes do Destinatário: </strong><br />
+<p>
+  <strong>Nome: </strong>{{ recipientName }}.<br />
+  <strong>Endereço: </strong>{{ recipientStreet }}.<br />
+  <strong>Número: </strong>{{ recipientNumber }}.<br />
+  <strong>CEP: </strong>{{ recipientZipCode }}.<br />
+  <strong>Cidade: </strong>{{ recipientCity }}.<br />
+  <strong>Estado: </strong>{{ recipientState }}.<br />
+  <strong>Complemento: </strong>{{ recipientComplement }}.
+  <br /><br />
+  <small>
+    O produto já está disponível para retirada em nossas instalações, das 08:00 às 18:00h.
+  </small>
+</p>
