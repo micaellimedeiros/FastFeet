@@ -24,7 +24,7 @@ Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-e
 - [Sentry](https://sentry.io/) - Para tratamento de exceções e controle de erros em produção.
 - [Youch](https://github.com/poppinss/youch) - Tratamento de execeções em desenvolvimento.
 
-### Bancos de dados da aplicacão
+### Bancos de dados da aplicação
 - [Postegres](https://github.com/postgres/postgres)
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
