@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img alt="Fastfeet" title="Fastfeet" src="../.github/logo.png" width="300px" />
+  <img alt="Fastfeet" title="Fastfeet" src="https://github.com/Rocketseat/bootcamp-gostack-desafio-03/blob/master/.github/logo.png" width="300px" />
 </h1>
 
 ---
@@ -24,7 +24,7 @@ Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-e
 - [Sentry](https://sentry.io/) - Para tratamento de exceções e controle de erros em produção.
 - [Youch](https://github.com/poppinss/youch) - Tratamento de execeções em desenvolvimento.
 
-### Bancos de dados da aplicacão
+### Bancos de dados da aplicação
 - [Postegres](https://github.com/postgres/postgres)
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
@@ -36,6 +36,16 @@ Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-e
 
 
 ---
+
+# Envio de emails:
+![Screenshot_2020-02-11 Mailtrap - Safe Email Testing](https://user-images.githubusercontent.com/54600663/74209995-c5f99780-4c68-11ea-9ce6-06052325d0d9.png)
+
+# Testando pelo insomnia:
+![insomnia](https://user-images.githubusercontent.com/54600663/74209998-c85bf180-4c68-11ea-9677-f540b7198c18.png)
+
+
+---
+
 
 By [MicaelliMedeiros](https://www.linkedin.com/in/micaellimedeiros/)
 

@@ -91,7 +91,6 @@ class DeliveryProblemController {
     if (delivery.end_date !== null && delivery.signature_id !== null) {
       return res.status(400).json('This delivery has been completed');
     }
-
     delivery.update(
       {
         canceled_at: new Date(),
