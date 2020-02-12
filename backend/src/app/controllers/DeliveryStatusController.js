@@ -28,9 +28,9 @@ class DeliveryStatusController {
 
     const deliveries = await Delivery.findAll({
       where: {
+        deliveryman_id: req.body.id,
         end_date: null,
         canceled_at: null,
-        deliveryman_id: req.body.id,
       },
     });
     return res.json(deliveries);
@@ -93,9 +93,9 @@ class DeliveryStatusController {
     const endInterval = setSeconds(setMinutes(setHours(startDate, 18), 0), 0);
 
     if (isAfter(startDate, endInterval) || isBefore(startDate, startInterval)) {
-      return res
-        .status(400)
-        .json({ error: 'The access is permitted only between 08:00 and 18:00h' });
+      return res.status(400).json({
+        error: 'The access is permitted only between 08:00 and 18:00h',
+      });
     }
 
     const { deliveryman_id, delivery_id } = req.params;

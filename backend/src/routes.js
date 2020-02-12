@@ -18,7 +18,9 @@ const upload = multer(multerConfig);
 routes.post('/sessions', SessionController.store);
 
 routes.get('/deliveryman/deliveries', DeliveryStatusController.index);
+// Listar encomendas finalizadas
 routes.get('/deliveryman/:id/deliveries', DeliveryStatusController.show);
+
 routes.put(
   '/deliveryman/:deliveryman_id/deliveries/:delivery_id',
   DeliveryStatusController.update
