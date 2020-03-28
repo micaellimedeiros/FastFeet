@@ -1,0 +1,17 @@
+<strong>Olá, {{ deliveryman }}</strong>
+<p>Nova entrega registrada para você realizar!</p>
+<p>
+  <strong>Produto: </strong> {{ product }}
+  <br />
+  <strong>Cliente: </strong> {{ recipient }}
+  <br />
+  <div>
+    <strong>Endereço de entrega:</strong>
+    <div style="font-size: 14px; display: flex; flex-direction: column;">
+      <div><strong>Rua: </strong>{{ street }}</div>
+      <div><strong>Nº: </strong>{{ number }}</div>
+      <div><strong>Cidade: </strong>{{ city }}</div>
+      <div><strong>Estado: </strong>{{ state }}</div>
+    </div>
+  </div>
+</p>
