@@ -15,11 +15,11 @@ class Mail {
       auth: auth.user ? auth : null,
     });
 
-    this.cofigureTemplates();
+    this.configureTemplates();
   }
 
-  cofigureTemplates() {
-    const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
+  configureTemplates() {
+    const viewPath = resolve(__dirname, '..', 'app', 'view', 'emails');
 
     this.transporter.use(
       'compile',
