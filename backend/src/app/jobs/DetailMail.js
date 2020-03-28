@@ -1,27 +1,25 @@
-import Mail from '../../lib/Mail';
+import Mail from "../../lib/Mail";
 
 class DetailMail {
   get key() {
-    return 'DetailMail';
+    return "DetailMail";
   }
 
   async handle({ data }) {
-    const { delivery, deliveryman, recipient } = data;
+    const { deliverymanExist, recipientExist, delivery } = data;
 
     await Mail.sendMail({
-      to: `${deliveryman.name} <${deliveryman.email}>`,
-      subject: `Detalhes da entrega`,
-      template: 'Detail',
+      to: `${deliverymanExist.name} <${deliverymanExist.email}>`,
+      subject: "Nova entrega",
+      template: "delivery",
       context: {
+        deliveryman: deliverymanExist.name,
         product: delivery.product,
-        deliveryman: deliveryman.name,
-        recipientName: recipient.name,
-        recipientStreet: recipient.street,
-        recipientNumber: recipient.number,
-        recipientZipCode: recipient.zipcode,
-        recipientCity: recipient.city,
-        recipientState: recipient.state,
-        recipientComplement: recipient.complement || 'Não informado',
+        recipient: recipientExist.name,
+        street: recipientExist.street,
+        number: recipientExist.number,
+        city: recipientExist.city,
+        state: recipientExist.state,
       },
     });
   }
