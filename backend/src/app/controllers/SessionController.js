@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
-
+import jwt from 'jsonwebtoken';
 import User from '../models/User';
-import authconfig from '../../config/auth';
+
+import authConfig from '../../config/auth';
 
 class SessionController {
   async store(req, res) {
@@ -10,13 +10,14 @@ class SessionController {
       email: Yup.string()
         .email()
         .required(),
-      password: Yup.string().required(),
+      password: Yup.string()
+        .required()
+        .min(6),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Field validation fails' });
     }
-
     const { email, password } = req.body;
 
     const user = await User.findOne({ where: { email } });
@@ -29,16 +30,17 @@ class SessionController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name } = user;
+    const { id, name, admin } = user;
 
     return res.json({
       user: {
         id,
         name,
         email,
+        admin,
       },
-      token: jwt.sign({ id }, authconfig.secret, {
-        expiresIn: authconfig.expiresIn,
+      token: jwt.sign({ id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
       }),
     });
   }

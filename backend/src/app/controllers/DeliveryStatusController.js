@@ -1,169 +1,105 @@
-import { Op } from 'sequelize';
-import * as Yup from 'yup';
-
-import {
-  isAfter,
-  isBefore,
-  parseISO,
-  setSeconds,
-  setMinutes,
-  setHours,
-  startOfDay,
-  endOfDay,
-} from 'date-fns';
-
+import { isEqual, parseISO, format } from 'date-fns';
 import Delivery from '../models/Delivery';
-import Deliveryman from '../models/Deliveryman';
+import Recipient from '../models/Recipient';
 import File from '../models/File';
+import Withdraw from '../models/Withdraw';
 
 class DeliveryStatusController {
   async index(req, res) {
-    const checkDeliverymanExists = await Deliveryman.findOne({
-      where: { id: req.body.id },
-    });
+    const { page = 1 } = req.query;
 
-    if (!checkDeliverymanExists) {
-      res.status(400).json({ error: 'This Deliveryman does not exists' });
-    }
-
-    const deliveries = await Delivery.findAll({
+    const delivery = await Delivery.findAll({
       where: {
-        deliveryman_id: req.body.id,
-        end_date: null,
+        deliveryman_id: req.params.id,
         canceled_at: null,
+        signature_id: null,
       },
-    });
-    return res.json(deliveries);
-  }
-
-  async show(req, res) {
-    const { id } = req.params;
-
-    const checkDeliverymanExists = await Deliveryman.findOne({
-      where: { id },
-    });
-
-    if (!checkDeliverymanExists) {
-      res.status(400).json({ error: 'This Deliveryman does not exists' });
-    }
-
-    const deliveries = await Delivery.findAll({
-      where: {
-        end_date: {
-          [Op.ne]: null,
-        },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'deliveryman_id', 'recipient_id'],
       },
+      delivery: [['id', 'DESC']],
+      limit: 20,
+      offset: (page - 1) * 20,
       include: [
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+          },
+        },
         {
           model: File,
           as: 'signature',
-          attributes: ['url', 'path', 'name'],
+          attributes: {
+            exclude: ['id', 'path', 'url'],
+          },
         },
       ],
     });
 
-    return res.json(deliveries);
+    return res.json(delivery);
   }
 
   async update(req, res) {
-    const schema = Yup.object(req.body).shape({
-      start_date: Yup.date(),
-      end_date: Yup.date(),
-      signature_id: Yup.number(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fail' });
-    }
-
-    const startDate = parseISO(req.body.start_date);
-    const endDate = parseISO(req.body.end_date);
-
-    if (isBefore(startDate, new Date())) {
-      return res.status(400).json({ error: 'Past dates are not permitted' });
-    }
-
-    if (isBefore(endDate, startDate)) {
-      return res
-        .status(400)
-        .json({ error: 'Delivery date must be after the withdrawal date' });
-    }
-
-    const startInterval = setSeconds(setMinutes(setHours(startDate, 8), 0), 0);
-    const endInterval = setSeconds(setMinutes(setHours(startDate, 18), 0), 0);
-
-    if (isAfter(startDate, endInterval) || isBefore(startDate, startInterval)) {
-      return res.status(400).json({
-        error: 'The access is permitted only between 08:00 and 18:00h',
-      });
-    }
-
-    const { deliveryman_id, delivery_id } = req.params;
-
-    const deliverymanExists = await Deliveryman.findOne({
-      where: { id: deliveryman_id },
-    });
-
-    const deliveryExists = await Delivery.findOne({
-      where: { id: delivery_id },
-    });
-
-    if (!deliverymanExists && !deliveryExists) {
-      return res
-        .status(400)
-        .json({ error: 'Delivery and Deliveryman does not exists' });
-    }
-
-    if (!deliverymanExists) {
-      return res.status(400).json({ error: 'Deliveryman does not exists' });
-    }
-
-    if (!deliveryExists) {
-      return res.status(400).json({ error: 'Delivery does not exists' });
-    }
-
-    const deliveryBelongsToDeliveryman = await Delivery.findOne({
-      where: { id: delivery_id, deliveryman_id },
-    });
-
-    if (!deliveryBelongsToDeliveryman) {
-      return res.status(401).json({
-        error: 'This Delivery does not belogs to Deliveryman',
-      });
-    }
-
-    const ordersPickupInDay = await Delivery.findAll({
+    const delivery = await Delivery.findByPk(req.params.delivery_id, {
       where: {
-        start_date: {
-          [Op.between]: [startOfDay(startDate), endOfDay(startDate)],
-        },
+        deliveryman_id: req.params.deliveryman_id,
+        canceled_at: null,
+        signature_id: null,
       },
     });
 
-    const arrayOfIds = ordersPickupInDay.map(order => order.id);
-
-    if (
-      ordersPickupInDay.length < 5 ||
-      arrayOfIds.includes(Number(delivery_id))
-    ) {
-      const data = await deliveryBelongsToDeliveryman.update(req.body, {
-        attributes: [
-          'id',
-          'product',
-          'recipient_id',
-          'canceled_at',
-          'start_date',
-          'end_date',
-          'signature_id',
-        ],
-      });
-
-      return res.json(data);
+    if (!delivery) {
+      return res.status(401).json({ error: 'Delivery not found!' });
     }
 
-    return res
-      .status(401)
-      .json({ error: 'The limit is 5 per day, can back tomorrow!' });
+    const getDate = new Date();
+
+    const checkWithdraws = await Withdraw.findOne({
+      where: {
+        deliveryman_id: req.params.deliveryman_id,
+        date: getDate,
+      },
+    });
+
+    if (checkWithdraws) {
+      const { date, count } = checkWithdraws;
+
+      if (isEqual(parseISO(date), parseISO(format(getDate, 'yyyy-MM-dd')))) {
+        if (count >= 5) {
+          return res
+            .status(401)
+            .json({ error: 'You con only withdraw 5 times per day' });
+        }
+      }
+
+      await checkWithdraws.update({
+        count: count + 1,
+      });
+    } else {
+      await Withdraw.create({
+        deliveryman_id: req.params.deliveryman_id,
+        date: getDate,
+        count: 1,
+      });
+    }
+
+    const {
+      id,
+      recipient_id,
+      deliveryman_id,
+      signature_id,
+      product,
+    } = await delivery.update(req.body);
+
+    return res.json({
+      id,
+      recipient_id,
+      deliveryman_id,
+      signature_id,
+      product,
+    });
   }
 }
 

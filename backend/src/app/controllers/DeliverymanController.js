@@ -1,11 +1,23 @@
+import { Op } from 'sequelize';
 import * as Yup from 'yup';
+
 import Deliveryman from '../models/Deliveryman';
 import File from '../models/File';
 
 class DeliverymanController {
   async index(req, res) {
-    const deliverymen = await Deliveryman.findAll({
-      attributes: ['id', 'name', 'email', 'avatar_id'],
+    const { page = 1, name = '' } = req.query;
+
+    const { docs, pages, total } = await Deliveryman.paginate({
+      where: {
+        name: {
+          [Op.like]: `%${name}%`,
+        },
+      },
+      attributes: ['id', 'name', 'email'],
+      paginate: 10,
+      page,
+      delivery: [['id', 'DESC']],
       include: [
         {
           model: File,
@@ -14,59 +26,90 @@ class DeliverymanController {
         },
       ],
     });
-    return res.json(deliverymen);
+
+    return res.json({ docs, page, pages, total });
   }
 
-  async store(req, res) {
-    const schema = Yup.object(req.body).shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required(),
-      avatar_id: Yup.number(),
+  async show(req, res) {
+    const deliveryman = await Deliveryman.findByPk(req.params.id, {
+      attributes: ['id', 'name', 'email'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
     });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fail' });
+    if (!deliveryman) {
+      return res.status(400).json({ error: 'Deliveryman not found' });
     }
-
-    const deliverymanExists = await Deliveryman.findOne({
-      where: { email: req.body.email },
-    });
-
-    if (deliverymanExists) {
-      return res.status(400).json({ error: 'Deliveryman already exists' });
-    }
-
-    const deliveryman = await Deliveryman.create(req.body);
 
     return res.json(deliveryman);
   }
 
-  async update(req, res) {
-    const schema = Yup.object(req.body).shape({
-      name: Yup.string(),
-      email: Yup.string().email(),
-      avatar_id: Yup.number(),
+  async store(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string()
+        .email()
+        .required(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fail' });
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const deliverymanExist = await Deliveryman.findOne({
+      where: { email: req.body.email },
+    });
+
+    if (deliverymanExist) {
+      return res.status(401).json({ error: 'Deliveryman already exist' });
+    }
+
+    const { id, name, email, avatar_id } = await Deliveryman.create(req.body);
+
+    return res.json({
+      id,
+      name,
+      email,
+      avatar_id,
+    });
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string(),
+      email: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const deliveryman = await Deliveryman.findByPk(req.params.id, {
+      where: { status: true },
+    });
+
+    if (!deliveryman) {
+      return res.status(400).json({ error: 'Delivery not found' });
     }
 
     const { email } = req.body;
-
-    const deliveryman = await Deliveryman.findByPk(req.params.id);
 
     if (email && email !== deliveryman.email) {
       const deliverymanExists = await Deliveryman.findOne({ where: { email } });
 
       if (deliverymanExists) {
-        return res.status(400).json({ error: 'Deliveryman already exists' });
+        return res
+          .status(401)
+          .json({ error: 'This e-mail is already in use!' });
       }
     }
 
-    const { id, name, avatar_id } = await deliveryman.update(req.body);
+    const { id, avatar_id, name } = await deliveryman.update(req.body);
 
     return res.json({
       id,
@@ -77,17 +120,19 @@ class DeliverymanController {
   }
 
   async delete(req, res) {
-    const { id } = req.params;
+    const deliveryman = await Deliveryman.findByPk(req.params.id, {
+      where: { status: true },
+    });
 
-    const deliverymanExists = await Deliveryman.findByPk(id);
-
-    if (!deliverymanExists) {
-      return res.status(400).json({ error: 'Deliveryman not exists' });
+    if (!deliveryman) {
+      return res.status(400).json({ error: 'Deliveryman not found' });
     }
 
-    await Deliveryman.destroy({ where: { id } });
+    await deliveryman.destroy(deliveryman);
 
-    return res.status(200).json();
+    return res.status(200).json({
+      message: `${deliveryman.name} deleted with success`,
+    });
   }
 }
 
