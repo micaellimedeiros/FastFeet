@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import sequelizePaginate from 'sequelize-paginate';
 
 class Recipient extends Model {
   static init(sequelize) {
@@ -6,17 +7,18 @@ class Recipient extends Model {
       {
         name: Sequelize.STRING,
         street: Sequelize.STRING,
-        number: Sequelize.INTEGER,
+        number: Sequelize.STRING,
         complement: Sequelize.STRING,
-        state: Sequelize.STRING,
         city: Sequelize.STRING,
-        zipcode: Sequelize.STRING,
+        state: Sequelize.STRING,
+        cep: Sequelize.STRING,
       },
       {
         sequelize,
       }
     );
 
+    sequelizePaginate.paginate(Recipient);
     return this;
   }
 }

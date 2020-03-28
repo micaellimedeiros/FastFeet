@@ -1,20 +1,21 @@
 import Sequelize, { Model } from 'sequelize';
+import sequelizePaginate from 'sequelize-paginate';
 
 class Delivery extends Model {
   static init(sequelize) {
     super.init(
       {
         product: Sequelize.STRING,
-        canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
+        canceled_at: Sequelize.DATE,
       },
       {
         sequelize,
-        tableName: 'deliveries',
       }
     );
 
+    sequelizePaginate.paginate(Delivery);
     return this;
   }
 
