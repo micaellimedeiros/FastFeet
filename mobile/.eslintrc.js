@@ -33,11 +33,7 @@ module.exports = {
     "no-console": ["error", { allow: ["tron"] }],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    // "react/prop-types": [
-    //   "enabled",
-    //   { "ignore": "ignore", "customValidators": "customValidator" }
-    // ]
-  },
+    "react/prop-types": [0, { ignore: 0, customValidators: 0, skipUndeclared: 0 }],
 
   settings: {
     "import/resolver": {
