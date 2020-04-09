@@ -1,4 +1,5 @@
 import { isEqual, parseISO, format } from 'date-fns';
+import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
 import File from '../models/File';
@@ -6,39 +7,43 @@ import Withdraw from '../models/Withdraw';
 
 class DeliveryStatusController {
   async index(req, res) {
+    const completed = req.query.completed || false;
     const { page = 1 } = req.query;
 
-    const delivery = await Delivery.findAll({
+    const deliveries = await Delivery.findAll({
       where: {
         deliveryman_id: req.params.id,
         canceled_at: null,
-        signature_id: null,
+        signature_id: completed ? { [Op.ne]: null } : null,
       },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt', 'deliveryman_id', 'recipient_id'],
-      },
-      delivery: [['id', 'DESC']],
+      delivery: ['createdAt'],
       limit: 20,
       offset: (page - 1) * 20,
+      attributes: ['id', 'product', 'start_date', 'end_date', 'createdAt'],
       include: [
         {
           model: Recipient,
           as: 'recipient',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt'],
-          },
+          attributes: [
+            'id',
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'city',
+            'cep',
+          ],
         },
         {
           model: File,
           as: 'signature',
-          attributes: {
-            exclude: ['id', 'path', 'url'],
-          },
+          attributes: ['id', 'path', 'url'],
         },
       ],
     });
 
-    return res.json(delivery);
+    return res.status(200).json(deliveries);
   }
 
   async update(req, res) {

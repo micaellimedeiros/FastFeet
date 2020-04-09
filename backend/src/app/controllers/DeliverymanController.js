@@ -31,13 +31,17 @@ class DeliverymanController {
   }
 
   async show(req, res) {
-    const deliveryman = await Deliveryman.findByPk(req.params.id, {
-      attributes: ['id', 'name', 'email'],
+    const { id } = req.params;
+
+    const deliveryman = await Deliveryman.findByPk(id, {
+      attributes: {
+        exclude: ['avatar_id'],
+      },
       include: [
         {
           model: File,
           as: 'avatar',
-          attributes: ['name', 'path', 'url'],
+          attributes: ['id', 'name', 'path', 'url'],
         },
       ],
     });

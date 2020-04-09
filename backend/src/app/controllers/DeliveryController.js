@@ -4,6 +4,7 @@ import { setHours, isWithinInterval, parseISO } from 'date-fns';
 
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
+import DeliveryProblems from '../models/DeliveryProblems';
 import Deliveryman from '../models/Deliveryman';
 import File from '../models/File';
 
@@ -12,96 +13,102 @@ import Queue from '../../lib/Queue';
 
 class DeliveryController {
   async index(req, res) {
-    const { page = 1, name = '' } = req.query;
+    const { q } = req.query;
+    const where = {};
 
-    const { docs, pages, total } = await Delivery.paginate({
-      where: {
-        product: {
-          [Op.iLike]: `%${name}%`,
-        },
-      },
-      paginate: 10,
-      page,
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
-      delivery: [['id', 'DESC']],
+    if (q) {
+      where.product = { [Op.iLike]: `%${q}%` };
+    }
+
+    const deliveries = await Delivery.findAll({
+      where,
+      attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
       include: [
         {
           model: Recipient,
           as: 'recipient',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt'],
-          },
-        },
-        {
-          model: Deliveryman,
-          as: 'deliveryman',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt'],
-          },
-          include: [
-            {
-              model: File,
-              as: 'avatar',
-              attributes: ['id', 'path', 'url'],
-            },
+          attributes: [
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'city',
+            'cep',
           ],
-        },
-        {
-          model: File,
-          as: 'signature',
-          attributes: ['id', 'path', 'url'],
-        },
-      ],
-    });
-
-    return res.json({
-      docs,
-      page,
-      pages,
-      total,
-    });
-  }
-
-  async show(req, res) {
-    const delivery = await Delivery.findByPk(req.params.id, {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
-      include: [
-        {
-          model: Recipient,
-          as: 'recipient',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt'],
-          },
         },
         {
           model: Deliveryman,
           as: 'deliveryman',
           attributes: ['id', 'name', 'email'],
-          where: {
-            status: true,
-          },
           include: [
             {
               model: File,
               as: 'avatar',
-              attributes: ['id', 'path', 'url'],
+              attributes: ['name', 'path', 'url'],
             },
           ],
         },
         {
           model: File,
           as: 'signature',
-          attributes: ['id', 'path', 'url'],
+          attributes: ['name', 'path', 'url'],
+        },
+        {
+          model: DeliveryProblems,
+          as: 'problems',
+          attributes: ['id', 'description', 'createdAt'],
+        },
+      ],
+    });
+    return res.json(deliveries);
+  }
+
+  async show(req, res) {
+    const delivery = await Delivery.findByPk(req.params.id, {
+      attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
+      include: [
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: [
+            'id',
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'city',
+            'cep',
+          ],
+        },
+        {
+          model: Deliveryman,
+          as: 'deliveryman',
+          attributes: ['id', 'name', 'email'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['name', 'path', 'url'],
+            },
+          ],
+        },
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['name', 'path', 'url'],
+        },
+        {
+          model: DeliveryProblems,
+          as: 'problems',
+          attributes: ['id', 'description', 'createdAt'],
         },
       ],
     });
 
     if (!delivery) {
-      return res.status(401).json({ error: 'Delivery not found!' });
+      return res.status(400).json({ error: 'Delivery not found' });
     }
 
     return res.json(delivery);

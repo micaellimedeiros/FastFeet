@@ -16,7 +16,7 @@ class DeliveredDeliveryController {
       attributes: {
         exclude: ['createdAt', 'updatedAt', 'deliveryman_id', 'recipient_id'],
       },
-      order: [['id', 'DESC']],
+      deliveryman: [['id', 'DESC']],
       limit: 10,
       offset: (page - 1) * 10,
       include: [
