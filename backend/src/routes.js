@@ -23,13 +23,15 @@ routes.get('/cep', CepController.show);
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+routes.get('/deliverymans/:id', DeliverymanController.show);
+routes.get('/deliverymans/:id/deliveries', DeliveryStatusController.index);
+routes.post('/files', upload.single('file'), FileController.store);
 
 routes.use(authMiddleware);
 
 routes.get('/users', UserController.index);
 routes.put('/users/:id', UserController.update);
 
-routes.get('/deliverymans/:id/deliveries', DeliveryStatusController.index);
 routes.put(
   '/deliverymans/:deliveryman_id/deliveries/:delivery_id',
   DeliveryController.update
@@ -44,7 +46,6 @@ routes.post('/recipients', RecipientController.store);
 routes.put('/recipients', RecipientController.update);
 
 routes.get('/deliverymans', DeliverymanController.index);
-routes.get('/deliverymans/:id', DeliverymanController.show);
 routes.post('/deliverymans', DeliverymanController.store);
 routes.put('/deliverymans/:id', DeliverymanController.update);
 routes.delete('/deliverymans/:id', DeliverymanController.delete);
@@ -62,7 +63,5 @@ routes.delete(
   '/problem/:id/cancel-delivery',
   DeliveryProblemsController.delete
 );
-
-routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;
