@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from '../models/User';
 
 export default async (req, res, next) => {
   const checkUserAdmin = await User.findOne({
@@ -8,7 +8,7 @@ export default async (req, res, next) => {
   if (!checkUserAdmin) {
     return res
       .status(400)
-      .json({ error: "Only admins can access this functionality" });
+      .json({ error: 'Only admins can access this functionality' });
   }
 
   return next();
