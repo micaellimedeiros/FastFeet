@@ -6,9 +6,7 @@ class DeliveryProblems extends Model {
       {
         description: Sequelize.STRING,
       },
-      {
-        sequelize,
-      }
+      { sequelize, tableName: 'delivery_problems' }
     );
 
     return this;
