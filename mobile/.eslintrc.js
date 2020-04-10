@@ -40,6 +40,10 @@ module.exports = {
 
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    "react/prop-types": [
+      "enabled",
+      { "ignore": "ignore", "customValidators": "customValidator" }
+    ]
   },
   settings: {
     "import/resolver": {
