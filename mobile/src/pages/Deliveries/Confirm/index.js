@@ -63,8 +63,8 @@ export default function Confirm({ route }) {
   const takePicture = async () => {
     if (cameraRef) {
       const options = { quality: 0.4, base64: true };
-      const photo = await cameraRef.current.takePictureAsync(options);
-      setPicture(photo.uri);
+      const data = await cameraRef.current.takePictureAsync(options);
+      setPicture(data.uri);
     }
   };
 
@@ -72,23 +72,21 @@ export default function Confirm({ route }) {
     try {
       const data = new FormData();
 
-      const uriParts = picture.split('.');
-      const fileType = uriParts[uriParts.length - 1];
-
       data.append('file', {
+        type: 'image/jpeg',
         uri: picture,
-        name: `signature-delivery-${id}.${fileType}`,
-        type: `image/${fileType}`,
+        name: picture.split('/').pop(),
       });
 
-      const res = await api.post('files', data);
+      const response = await api.post('files', data);
 
-      const signature_id = res.data.id;
+      const signature_id = response.data.id;
 
       await api.put(`deliverymans/${profile.id}/deliveries/${id}`, {
         end_date: new Date(),
         signature_id,
       });
+
       showMessage({
         message: 'Parabéns',
         description: 'Entrega Confirmada com sucesso',
@@ -97,7 +95,7 @@ export default function Confirm({ route }) {
 
       navigation.navigate('Deliveries');
     } catch (err) {
-      console.log(err)
+      console.log(picture);
       showMessage({
         message: 'Falha ao confirmar entrega',
         description: err.response
