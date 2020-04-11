@@ -57,7 +57,7 @@ export default function ListDeliveries({ navigation }) {
       setDeliveries(parseDeliveries(data));
     } catch (err) {
       showMessage({
-        message: 'Falha ao retirar mercadoria',
+        message: 'Falha na requisição',
         description: err.response
           ? err.response.data.error
           : 'Não foi possível buscar as entregas, por favor tente mais tarde',
@@ -85,7 +85,7 @@ export default function ListDeliveries({ navigation }) {
       setDeliveries(parseDeliveries(data));
     } catch (err) {
       showMessage({
-        message: 'Falha ao retirar mercadoria',
+        message: 'Falha na requisição',
         description: err.response
           ? err.response.data.error
           : 'Não foi possível buscar as entregas, por favor tente mais tarde',
@@ -119,7 +119,7 @@ export default function ListDeliveries({ navigation }) {
       }
     } catch (err) {
       showMessage({
-        message: 'Falha ao retirar mercadoria',
+        message: 'Falha na requisição',
         description: err.response
           ? err.response.data.error
           : 'Não foi possível buscar as entregas, por favor tente mais tarde',
