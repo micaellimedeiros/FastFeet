@@ -1,6 +1,5 @@
 import { Op } from 'sequelize';
 import * as Yup from 'yup';
-import { setHours, isWithinInterval, parseISO } from 'date-fns';
 
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
@@ -54,18 +53,13 @@ class DeliveryController {
           as: 'signature',
           attributes: ['name', 'path', 'url'],
         },
-        {
-          model: DeliveryProblems,
-          as: 'problems',
-          attributes: ['id', 'description', 'createdAt'],
-        },
       ],
     });
     return res.json(deliveries);
   }
 
   async show(req, res) {
-    const delivery = await Delivery.findByPk(req.params.id, {
+    const delivery = await Delivery.findByPk(req.params.delivery_id, {
       attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
       include: [
         {
@@ -125,82 +119,68 @@ class DeliveryController {
       return res.status(400).json({ error: 'Field validation fails' });
     }
 
-    const { recipient_id } = req.body;
+    const { recipient_id, deliveryman_id, product } = req.body;
 
-    const recipientExist = await Recipient.findByPk(recipient_id);
+    const recipient = await Recipient.findByPk(recipient_id);
+    const deliveryman = await Deliveryman.findByPk(deliveryman_id);
 
-    if (!recipientExist) {
-      return res.status(401).json({ error: 'Recipient does not exist' });
+    if (!recipient) {
+      return res.status(400).json({ error: 'Recipient does not exists' });
     }
 
-    const { deliveryman_id } = req.body;
-
-    const deliverymanExist = await Deliveryman.findByPk(
-      req.body.deliveryman_id
-    );
-
-    if (!deliverymanExist) {
-      return res.status(401).json({ error: 'Deliveryman does not exist' });
+    if (!deliveryman) {
+      return res.status(400).json({ error: 'Deliveryman does not exists' });
     }
 
-    const { id, product } = req.body;
-
-    const delivery = await Delivery.create({
-      id,
-      product,
+    const { id } = await Delivery.create({
       recipient_id,
       deliveryman_id,
+      product,
     });
 
     await Queue.add(CancellationMail.key, {
-      deliverymanExist,
-      recipientExist,
-      delivery,
+      deliveryman,
+      product,
+      recipient,
     });
 
-    return res.json(delivery);
+    return res.json({ id, recipient_id, deliveryman_id, product });
   }
 
   async update(req, res) {
     const schema = Yup.object().shape({
+      recipient_id: Yup.number(),
       deliveryman_id: Yup.number(),
-      canceled_at: Yup.date(),
+      product: Yup.string(),
       start_date: Yup.date(),
       end_date: Yup.date(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails!' });
+      return res.status(400).json({ error: 'Validation Fails' });
+    }
+    // check if delivery exists
+    const delivery = await Delivery.findByPk(req.params.delivery_id);
+
+    if (!delivery) {
+      return res.status(400).json({ error: 'Delivery does not exists' });
     }
 
-    const deliveryExists = await Delivery.findByPk(req.params.id);
+    const { recipient_id, deliveryman_id } = req.body;
 
-    if (!deliveryExists) {
-      return res.status(401).json({ error: 'Delivery not found!' });
+    // check if recipient exists
+    if (recipient_id && !(await Recipient.findByPk(recipient_id))) {
+      return res.status(400).json({ error: 'Recipient does not exists' });
     }
 
-    const { start_date } = req.body;
-
-    if (start_date) {
-      const formattedDate = parseISO(start_date);
-      const start_hour = setHours(new Date(), 8);
-      const end_hour = setHours(new Date(), 18);
-
-      if (
-        !isWithinInterval(formattedDate, {
-          start: start_hour,
-          end: end_hour,
-        })
-      ) {
-        return res.json({
-          error: 'You can only withdraw an delivery between 08:00 and 18:00!',
-        });
-      }
+    // check if deliveryman exissts
+    if (deliveryman_id && !(await Deliveryman.findByPk(deliveryman_id))) {
+      return res.status(400).json({ error: 'Deliveryman does not exists' });
     }
 
-    const delivery = await deliveryExists.update(req.body);
+    const deliveryUpdated = await delivery.update(req.body);
 
-    return res.json(delivery);
+    return res.json(deliveryUpdated);
   }
 
   async delete(req, res) {
