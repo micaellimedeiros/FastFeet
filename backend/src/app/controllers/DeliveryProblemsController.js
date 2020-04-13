@@ -33,7 +33,7 @@ class DeliveryProblemController {
 
     const problems = await DeliveryProblems.findAll({
       attributes: ['id', 'description', 'delivery_id'],
-      order: ['delivery_id'],
+      delivery: ['delivery_id'],
       limit: 7,
       offset: (page - 1) * 7,
       include: [

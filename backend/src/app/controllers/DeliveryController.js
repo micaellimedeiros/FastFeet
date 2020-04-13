@@ -12,16 +12,20 @@ import Queue from '../../lib/Queue';
 
 class DeliveryController {
   async index(req, res) {
-    const { q } = req.query;
+    const { q, page = 1, limit = 5 } = req.query;
     const where = {};
 
     if (q) {
       where.product = { [Op.iLike]: `%${q}%` };
     }
 
+    const total = await Delivery.count({ where });
     const deliveries = await Delivery.findAll({
       where,
       attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
+      delivery: [['id', 'DESC']],
+      limit,
+      offset: (page - 1) * limit,
       include: [
         {
           model: Recipient,
@@ -55,7 +59,13 @@ class DeliveryController {
         },
       ],
     });
-    return res.json(deliveries);
+    return res.json({
+      limit,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
+      total,
+      items: deliveries,
+    });
   }
 
   async show(req, res) {
