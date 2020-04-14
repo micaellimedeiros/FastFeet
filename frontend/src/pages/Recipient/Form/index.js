@@ -36,9 +36,9 @@ export default function RecipientForm({ match }) {
           setRecipient(response.data);
 
           setLoading(false);
-        } catch (err) {
+        } catch (info) {
           setLoading(false);
-          toast.error('Falha ao carregar dados');
+          toast.info('Insira os novos dados para atualizar o destinatário.');
         }
       }
       loadRecipientDetails();
