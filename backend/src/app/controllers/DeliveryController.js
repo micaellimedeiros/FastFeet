@@ -20,7 +20,7 @@ class DeliveryController {
     }
 
     const total = await Delivery.count({ where });
-    const deliveries = await Delivery.findAll({
+    const delivery = await Delivery.findAll({
       where,
       attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
       delivery: [['id', 'DESC']],
@@ -64,12 +64,12 @@ class DeliveryController {
       page: Number(page),
       pages: Math.ceil(total / limit),
       total,
-      items: deliveries,
+      items: delivery,
     });
   }
 
   async show(req, res) {
-    const delivery = await Delivery.findByPk(req.params.delivery_id, {
+    const delivery = await Delivery.findByPk(req.params.id, {
       attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
       include: [
         {
@@ -169,8 +169,9 @@ class DeliveryController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation Fails' });
     }
-    // check if delivery exists
-    const delivery = await Delivery.findByPk(req.params.delivery_id);
+
+    const { id } = req.params;
+    const delivery = await Delivery.findByPk(id);
 
     if (!delivery) {
       return res.status(400).json({ error: 'Delivery does not exists' });
@@ -178,12 +179,10 @@ class DeliveryController {
 
     const { recipient_id, deliveryman_id } = req.body;
 
-    // check if recipient exists
     if (recipient_id && !(await Recipient.findByPk(recipient_id))) {
       return res.status(400).json({ error: 'Recipient does not exists' });
     }
 
-    // check if deliveryman exissts
     if (deliveryman_id && !(await Deliveryman.findByPk(deliveryman_id))) {
       return res.status(400).json({ error: 'Deliveryman does not exists' });
     }
