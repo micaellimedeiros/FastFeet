@@ -31,7 +31,7 @@ routes.get('/delivery/:id/problems', DeliveryProblemsController.show);
 routes.post('/delivery/:id/problems', DeliveryProblemsController.store);
 
 routes.put(
-  '/deliverymans/:deliveryman_id/deliveries/:delivery_id',
+  '/deliverymans/:deliveryman_id/deliveries/:id',
   DeliveryController.update
 );
 
@@ -46,7 +46,8 @@ routes.use(adminAuthMiddleware);
 
 routes.get('/recipients', RecipientController.index);
 routes.post('/recipients', RecipientController.store);
-routes.put('/recipients', RecipientController.update);
+routes.put('/recipients/:id', RecipientController.update);
+routes.delete('/recipients/:id', RecipientController.delete);
 
 routes.get('/deliverymans', DeliverymanController.index);
 routes.post('/deliverymans', DeliverymanController.store);
