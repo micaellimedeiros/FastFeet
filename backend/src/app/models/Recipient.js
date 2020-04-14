@@ -21,6 +21,13 @@ class Recipient extends Model {
     sequelizePaginate.paginate(Recipient);
     return this;
   }
+
+  static associate(models) {
+    this.hasMany(models.Delivery, {
+      foreignKey: 'recipient_id',
+      as: 'deliveries',
+    });
+  }
 }
 
 export default Recipient;

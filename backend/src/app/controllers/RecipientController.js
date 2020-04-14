@@ -60,8 +60,8 @@ class RecipientController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       cep: Yup.string()
-        .min(9)
-        .max(9),
+        .min(8)
+        .max(11),
       street: Yup.string(),
       number: Yup.string().when('street', (street, field) =>
         street ? field.required() : field
@@ -76,30 +76,42 @@ class RecipientController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Field validation fails' });
     }
-
-    const recipient = await Recipient.findByPk(req.body.id);
+    const { id } = req.params;
+    const recipient = await Recipient.findByPk(id);
 
     const {
-      id,
       name,
-      cep,
-      street,
       number,
+      street,
       complement,
       city,
+      cep,
       state,
     } = await recipient.update(req.body);
 
     return res.json({
-      id,
       name,
-      cep,
-      street,
       number,
+      street,
       complement,
       city,
+      cep,
       state,
     });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const recipient = await Recipient.findByPk(id);
+
+    if (!recipient) {
+      return res.status(401).json({ error: 'Recipient not found.' });
+    }
+
+    await recipient.destroy();
+
+    return res.status(204).send();
   }
 }
 
