@@ -51,11 +51,11 @@ export default function DeliveryList() {
         const response = await api.get('/deliveries', {
           params: {
             page: currentPage,
-            name: search
+            q: search
           }
         });
 
-        const data = response.data.docs.map(delivery => {
+        const data = response.data.items.map(delivery => {
           return {
             ...delivery,
             formattedStatus: getFormattedStatus(delivery),
@@ -133,36 +133,37 @@ export default function DeliveryList() {
               </tr>
             </thead>
             <tbody>
-              {deliveries.map(delivery => (
-                <tr key={delivery.id}>
-                  <td>#{delivery.id}</td>
-                  <td>{delivery.recipient.name}</td>
-                  <td>
-                    <div>
-                      <img
-                        src={
-                          delivery.deliveryman.avatar.url
-                            ? delivery.deliveryman.avatar.url
-                            : 'https://api.adorable.io/avatars/0/abott@adorable.pngC'
-                        }
-                        alt="Avatar"
-                      />
-                      {delivery.deliveryman.name}
-                    </div>
-                  </td>
-                  <td>{delivery.recipient.city}</td>
-                  <td>{delivery.recipient.state}</td>
-                  <Status status={delivery.formattedStatus}>
-                    <span>{delivery.formattedStatus.text}</span>
-                  </Status>
-                  <Action
-                    page={`delivery/edit/${delivery.id}`}
-                    handleDetails={() => handleDetails(delivery)}
-                    id={delivery.id}
-                    delivery={deliveryDetail}
-                  />
-                </tr>
-              ))}
+              {deliveries.map(
+                ({ deliveryman, recipient, status, ...delivery }) => (
+                  <tr key={delivery.id}>
+                    <td>#{delivery.id}</td>
+                    <td>{recipient.name}</td>
+                    <td>
+                      <div>
+                        <img
+                          src={
+                            deliveryman.avatar.url ||
+                            'https://api.adorable.io/avatars/40/abott@adorable.pngC'
+                          }
+                          alt="Avatar"
+                        />
+                        {deliveryman.name}
+                      </div>
+                    </td>
+                    <td>{recipient.city}</td>
+                    <td>{recipient.state}</td>
+                    <Status status={delivery.formattedStatus}>
+                      <span>{delivery.formattedStatus.text}</span>
+                    </Status>
+                    <Action
+                      page={`delivery/edit/${delivery.id}`}
+                      handleDetails={() => handleDetails(delivery)}
+                      id={delivery.id}
+                      delivery={deliveryDetail}
+                    />
+                  </tr>
+                )
+              )}
             </tbody>
           </TableContainer>
 

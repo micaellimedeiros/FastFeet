@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
 import api from '~/services/api';
@@ -11,12 +10,6 @@ import { FormContainer, FormLoading, Input, Select } from '~/components/Form';
 import { HeaderForm } from '~/components/ActionHeader';
 
 import { SelectContainer } from './styles';
-
-const schema = Yup.object().shape({
-  product: Yup.string().required('O produto da entrega é obrigatório'),
-  deliveryman_id: Yup.number().required('Selecione um entregador'),
-  recipient_id: Yup.number().required('Selecione um entregador')
-});
 
 export default function DeliveryForm({ match }) {
   const { id } = match.params;
@@ -43,9 +36,11 @@ export default function DeliveryForm({ match }) {
           setSelectedDeliveryman(response.data.deliveryman);
 
           setLoading(false);
-        } catch (err) {
+        } catch (info) {
           setLoading(false);
-          toast.error('Falha ao carregar dados');
+          toast.info(
+            'Escolha os dados que deseja atualizar da encomenda escolhida'
+          );
         }
       }
 
@@ -55,17 +50,13 @@ export default function DeliveryForm({ match }) {
 
   useEffect(() => {
     async function loadSelectOptions() {
-      try {
-        const [recipientResponse, deliverymanResponse] = await Promise.all([
-          api.get('recipients'),
-          api.get('deliverymans')
-        ]);
+      const [recipientResponse, deliverymanResponse] = await Promise.all([
+        api.get('recipients'),
+        api.get('deliverymans')
+      ]);
 
-        setRecipients(recipientResponse.data.docs);
-        setDeliverymans(deliverymanResponse.data.docs);
-      } catch (err) {
-        toast.error('Falha ao carregar dados');
-      }
+      setRecipients(recipientResponse.data.docs);
+      setDeliverymans(deliverymanResponse.data.docs);
     }
 
     loadSelectOptions();
@@ -141,7 +132,6 @@ export default function DeliveryForm({ match }) {
         <FormContainer
           initialData={delivery}
           onSubmit={handleSubmit}
-          schema={schema}
           loading={buttonLoading}
         >
           <HeaderForm

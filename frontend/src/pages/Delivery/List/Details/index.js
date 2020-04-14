@@ -27,7 +27,7 @@ export default function Details({ visible, delivery, handleVisible }) {
             </Date>
             <Date>
               <strong>Entrega: </strong>
-              <Input name="end_date" readOnly />
+              <Input name="end_date_formatted" readOnly />
             </Date>
           </div>
           <div>
