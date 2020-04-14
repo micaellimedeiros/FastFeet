@@ -22,7 +22,7 @@ export function* singIn({ payload }) {
     //   return;
     // }
 
-    // api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(singInSuccess(token, user));
 
