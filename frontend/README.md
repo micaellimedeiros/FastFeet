@@ -17,8 +17,8 @@ _Use estes dados para realizar login na aplicação:_
 
 
 <h1 align="center">
-<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(3).png" width="30%" height="30%" />
-<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(4).png" width="30%" height="30%" />
-<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(1).png" width="30%" height="30%" />
-<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(2).png" width="30%" height="30%" />
+<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(3).png" width="50%" height="50%" /><img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(4).png" width="50%" height="50%" />
+
+<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(1).png" width="50%" height="50%" />
+<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/frontend/.github/FastFeet(2).png" width="50%" height="50%" />
 </h1>
