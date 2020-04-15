@@ -20,7 +20,7 @@ class DeliveryController {
     }
 
     const total = await Delivery.count({ where });
-    const delivery = await Delivery.findAll({
+    const deliveries = await Delivery.findAll({
       where,
       attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
       delivery: [['id', 'DESC']],
@@ -64,7 +64,7 @@ class DeliveryController {
       page: Number(page),
       pages: Math.ceil(total / limit),
       total,
-      items: delivery,
+      items: deliveries,
     });
   }
 
