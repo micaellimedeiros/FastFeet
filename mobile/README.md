@@ -4,39 +4,34 @@
 
 ### Aplicativo mobile do Fastfeet
 
-Esta aplicação foi desenvolvida usando o Expo.
-[Clique aqui](https://expo.io/learn) para conhecê-lo!
-
+_Esta aplicação foi desenvolvida usando o Expo. [Clique aqui](https://expo.io/learn) para conhecê-lo!_
 ```bash
 # para instalar as dependências
 cd mobile
 yarn
 ```
 
-Após isto, você precisa mudar para o ip de sua máquina neste arquivo:
-
+_Após isto, você precisa mudar para o ip de sua máquina neste arquivo:_
 [api.js](https://github.com/MicaelliMedeiros/FastFeet/blob/master/mobile/src/services/api.js)
 ```javascript
   baseURL: 'http://192.168.0.14:3334',
 ```
-Substitua 192.168.0.14 com o ip de sua máquina.
 
-Se você quiser usar o Reactotron mude o ip neste arquivo também:
-
+_Substitua 192.168.0.14 com o ip de sua máquina._
+_Se você quiser usar o Reactotron mude o ip neste arquivo também:_
 [ReactotronConfig](https://github.com/MicaelliMedeiros/FastFeet/blob/master/mobile/src/config/ReactotronConfig.js)
 ```javascript
   .configure({ host: '192.168.0.14' })
 ```
 
-Agora basta rodar a aplicação.
-
+_Agora basta rodar a aplicação._
 ```bash
 
 # para rodar a aplicação
 yarn start
 
 ```
-O Expo vai abrir uma página em seu navegador, use o QRcode no seu aplicativo e aguarde a aplicação iniciar.
+_O Expo vai abrir uma página em seu navegador, use o QRcode no seu aplicativo e aguarde a aplicação iniciar._
 
 > A aplicação foi desenvolvida em um Samsung Galaxy s9 plus.
 
