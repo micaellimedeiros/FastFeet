@@ -7,35 +7,67 @@
 Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-end, Front-end e Mobile) que é avaliada para emissão do Certificado do Bootcamp GoStack.
 
 ---
-### Ferramentas utilizadas na aplicação:
 
-- [Node.js](https://github.com/nodejs)
-- [Express](https://github.com/expressjs/express)
-- [Sequelize](https://github.com/sequelize/sequelize) - ORM para conversação com o banco de dados
-- [Yup](https://github.com/jquense/yup) - Schema validator(Validação de dadsos de entrada)
-- [JWT](https://www.npmjs.com/package/jsonwebtoken) - JSON WEB TOKEN - Lib para autenticação via token.
-- [Bcryptjs](https://www.npmjs.com/package/bcrypt) - Usado na criptografia de senhas.
-- [DotEnv](https://github.com/motdotla/dotenv) - Para lidar com variáveis ambiente.
-- [Nodemailer](https://github.com/nodemailer/nodemailer) - Lib para envio de emails com Node.js.
-- [Handlebars](https://handlebarsjs.com/) - Template Engine para criar template dos emails.
-- [Bee-Queue](https://github.com/bee-queue/bee-queue) - Lib para lidar com filas em background.(Ex: envio de emails)
-- [Date-fns](https://github.com/date-fns/date-fns) - Lib completa para manipulação de datas no JavaScript.
+## :information_source: Iniciando a aplicação
 
-- [Sentry](https://sentry.io/) - Para tratamento de exceções e controle de erros em produção.
-- [Youch](https://github.com/poppinss/youch) - Tratamento de execeções em desenvolvimento.
+### Requerimentos
 
-### Bancos de dados da aplicação
+_Para rodar a aplicação é necessário que você possua esses três programas:_
+* [Git](https://git-scm.com)
+* [Node](https://nodejs.org/)
+* [Yarn](https://yarnpkg.com/)
+
+
+### Também foram utilizados três bancos de dados da aplicação
 - [Postegres](https://github.com/postgres/postgres)
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
 
-### Ferramentas utilizadas no ambiente de desenvolvimento:
-- [Sucrase](https://sucrase.io/) - Para utilizar várias funções do ES6 (ECMAScript 6)
-- [ESLint](https://github.com/eslint/eslint) - Lint para identificar erros envolvendo padronização de códigos
-- [Prettier](https://github.com/prettier/prettier) - Deixa o código muito mais bonito
-
-
+### Porém, para facilitar, usamos o [Docker](https://www.docker.com/) para rodas os bancos de dados facilmente.
 ---
+
+```bash
+# Instale uma imagem do Redis
+docker run --name redisfastfeet -p 6379:6379 -d -t redis:alpine
+
+# Instale uma imagem do Postgres
+docker run --name fastfeet -e POSTGRES_PASSWORD=fastfeet -p 5432:5432 -d postgres
+(Neste caso, seu login e senha será: fastfeet)
+
+# Inicie o Redis
+docker start redisfastfeet
+
+# Inicie o Postgres
+docker start fastfeet
+
+```
+### Iniciando o Backend
+Agora clone este repositório e instale suas dependências
+```bash
+# clonando o repositório
+git clone https://github.com/MicaelliMedeiros/FastFeet.git
+
+# entrando na pasta do backend
+cd fastfeet/backend
+
+#instalando as dependências
+yarn
+
+```
+Para que haja a conexão do backend com o banco de dados, você precisará colocar suas informações no arquivo .env, baseado no .env.example que está dentro do backend.
+
+```bash
+# rodando as migrations para o banco
+yarn sequelize db:migrate
+
+# permitindo que haja o administrador no banco
+yarn sequelize db:seed:all
+
+# iniciando a aplicação
+yarn dev & yarn queue
+```
+
+Após estes passos, você poderá iniciar o frontend ou o mobile!
 
 # Envio de emails:
 ![Screenshot_2020-02-11 Mailtrap - Safe Email Testing](https://user-images.githubusercontent.com/54600663/74209995-c5f99780-4c68-11ea-9ce6-06052325d0d9.png)
@@ -43,10 +75,8 @@ Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-e
 # Testando pelo insomnia:
 ![insomnia](https://user-images.githubusercontent.com/54600663/74209998-c85bf180-4c68-11ea-9677-f540b7198c18.png)
 
-
 ---
 
-
-By [MicaelliMedeiros](https://www.linkedin.com/in/micaellimedeiros/)
+By [Micaelli Medeiros](https://www.linkedin.com/in/micaellimedeiros/)
 
 ---
