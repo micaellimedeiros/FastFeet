@@ -19,7 +19,7 @@ _Para rodar a aplicação é necessário que você possua esses três programas:
 
 
 ### Também foram utilizados três bancos de dados da aplicação
-- [Postegres](https://github.com/postgres/postgres)
+- [Postgres](https://github.com/postgres/postgres)
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
 
@@ -87,7 +87,7 @@ _Use estes dados para realizar login na aplicação:_
 
 ___
 
-### :mobile: Aplicativo mobile do Fastfeet
+### :iphone: Aplicativo mobile do Fastfeet
 
 _Esta aplicação foi desenvolvida usando o Expo. [Clique aqui](https://expo.io/learn) para conhecê-lo!_
 
