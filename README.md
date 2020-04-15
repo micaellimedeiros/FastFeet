@@ -6,6 +6,10 @@
 
 Esse desafio faz parte do Desafio Final, que é uma aplicação completa (Back-end, Front-end e Mobile) que é avaliada para emissão do Certificado do Bootcamp GoStack.
 
+<h1 align="center">
+<img src="https://raw.githubusercontent.com/MicaelliMedeiros/FastFeet/master/.github/Sem%20T%C3%ADtulo-1.jpg" width="50%" heigth="50%" />
+</h1>
+
 ---
 
 ## :fire: Iniciando a aplicação :fire:
