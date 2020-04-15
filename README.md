@@ -24,7 +24,7 @@ _Para rodar a aplicação é necessário que você possua esses três programas:
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
 
-### Porém, para facilitar, usamos o [Docker](https://www.docker.com/) para rodas os bancos de dados facilmente. Dentro dele siga estes passos:
+### Porém, para facilitar, usamos o [Docker](https://www.docker.com/) para rodar os bancos de dados facilmente. Dentro dele siga estes passos:
 
 ```bash
 # Instale uma imagem do Redis
