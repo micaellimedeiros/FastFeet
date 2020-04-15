@@ -4,7 +4,7 @@
 
 ### Frontend do Fastfeet
 
-*Para que esta aplicação funcione corretamente é necessario primeiramente iniciar o backend.* [Clique aqui](https://github.com/MicaelliMedeiros/FastFeet/tree/master/backend) *para ir até a página*
+**Para que esta aplicação funcione corretamente é necessario primeiramente iniciar o backend.** [Clique aqui](https://github.com/MicaelliMedeiros/FastFeet/tree/master/backend) **para ir até a página**
 
 _Após seguir os passos, abra um terminal na pasta do frontend e digite:_
 ```bash
